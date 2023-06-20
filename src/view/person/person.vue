@@ -4,8 +4,24 @@
       <el-col :span="6">
         <div class="fl-left avatar-box">
           <div class="user-card">
-            <div class="header-box">
-              <SelectImage v-model="userStore.userInfo.headerImg" />
+            <div
+              class="user-headpic-update"
+              :style="{
+                'background-image': `url(${
+                  userStore.userInfo.headerImg &&
+                  userStore.userInfo.headerImg.slice(0, 4) !== 'http'
+                    ? path + userStore.userInfo.headerImg
+                    : userStore.userInfo.headerImg
+                })`,
+                'background-repeat': 'no-repeat',
+                'background-size': 'cover',
+              }"
+            >
+              <span class="update" @click="openChooseImg">
+                <el-icon>
+                  <edit />
+                </el-icon>
+                重新上传</span>
             </div>
             <div class="user-personality">
               <p v-if="!editFlag" class="nickName">
@@ -113,6 +129,8 @@
       </el-col>
     </el-row>
 
+    <ChooseImg ref="chooseImgRef" @enter-img="enterImg" />
+
     <el-dialog
       v-model="showPassword"
       title="修改密码"
@@ -138,11 +156,11 @@
       <template #footer>
         <div class="dialog-footer">
           <el-button
-
+            size="small"
             @click="showPassword = false"
           >取 消</el-button>
           <el-button
-
+            size="small"
             type="primary"
             @click="savePassword"
           >确 定</el-button>
@@ -158,19 +176,19 @@
         <el-form-item label="验证码" label-width="120px">
           <div class="code-box">
             <el-input v-model="phoneForm.code" autocomplete="off" placeholder="请自行设计短信服务，此处为模拟随便写" style="width:300px" />
-            <el-button type="primary" :disabled="time>0" @click="getCode">{{ time>0?`(${time}s)后重新获取`:'获取验证码' }}</el-button>
+            <el-button size="small" type="primary" :disabled="time>0" @click="getCode">{{ time>0?`(${time}s)后重新获取`:'获取验证码' }}</el-button>
           </div>
         </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
           <el-button
-
+            size="small"
             @click="closeChangePhone"
           >取消</el-button>
           <el-button
             type="primary"
-
+            size="small"
             @click="changePhone"
           >更改</el-button>
         </span>
@@ -185,19 +203,19 @@
         <el-form-item label="验证码" label-width="120px">
           <div class="code-box">
             <el-input v-model="emailForm.code" placeholder="请自行设计邮件服务，此处为模拟随便写" autocomplete="off" style="width:300px" />
-            <el-button type="primary" :disabled="emailTime>0" @click="getEmailCode">{{ emailTime>0?`(${emailTime}s)后重新获取`:'获取验证码' }}</el-button>
+            <el-button size="small" type="primary" :disabled="emailTime>0" @click="getEmailCode">{{ emailTime>0?`(${emailTime}s)后重新获取`:'获取验证码' }}</el-button>
           </div>
         </el-form-item>
       </el-form>
       <template #footer>
         <span class="dialog-footer">
           <el-button
-
+            size="small"
             @click="closeChangeEmail"
           >取消</el-button>
           <el-button
             type="primary"
-
+            size="small"
             @click="changeEmail"
           >更改</el-button>
         </span>
@@ -213,12 +231,13 @@ export default {
 </script>
 
 <script setup>
+import ChooseImg from '@/components/chooseImg/index.vue'
 import { setSelfInfo, changePassword } from '@/api/user.js'
-import { reactive, ref, watch } from 'vue'
+import { reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/pinia/modules/user'
-import SelectImage from '@/components/selectImage/selectImage.vue'
 
+const path = ref(import.meta.env.VITE_BASE_API + '/')
 const activeName = ref('second')
 const rules = reactive({
   password: [
@@ -278,16 +297,21 @@ const clearPassword = () => {
   modifyPwdForm.value.clearValidate()
 }
 
-watch(() => userStore.userInfo.headerImg, async(val) => {
-  const res = await setSelfInfo({ headerImg: val })
+const chooseImgRef = ref(null)
+const openChooseImg = () => {
+  chooseImgRef.value.open()
+}
+
+const enterImg = async(url) => {
+  const res = await setSelfInfo({ headerImg: url })
   if (res.code === 0) {
-    userStore.ResetUserInfo({ headerImg: val })
+    userStore.ResetUserInfo({ headerImg: url })
     ElMessage({
       type: 'success',
       message: '设置成功',
     })
   }
-})
+}
 
 const openEdit = () => {
   nickName.value = userStore.userInfo.nickName
@@ -533,9 +557,5 @@ const changeEmail = async() => {
 .code-box{
   display: flex;
   justify-content: space-between;
-}
-.header-box{
-  display: flex;
-  justify-content: center;
 }
 </style>

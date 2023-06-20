@@ -4,6 +4,8 @@ import getPageTitle from '@/utils/page'
 import router from '@/router'
 import Nprogress from 'nprogress'
 
+let asyncRouterFlag = 0
+
 const whiteList = ['Login', 'Init']
 
 const getRouter = async(userStore) => {
@@ -36,7 +38,6 @@ async function handleKeepAlive(to) {
 }
 
 router.beforeEach(async(to, from) => {
-  const routerStore = useRouterStore()
   Nprogress.start()
   const userStore = useUserStore()
   to.meta.matched = [...to.matched]
@@ -46,7 +47,8 @@ router.beforeEach(async(to, from) => {
   document.title = getPageTitle(to.meta.title, to)
   if (whiteList.indexOf(to.name) > -1) {
     if (token) {
-      if (!routerStore.asyncRouterFlag && whiteList.indexOf(from.name) < 0) {
+      if (!asyncRouterFlag && whiteList.indexOf(from.name) < 0) {
+        asyncRouterFlag++
         await getRouter(userStore)
       }
       // token 可以解析但是却是不存在的用户 id 或角色 id 会导致无限调用
@@ -69,7 +71,8 @@ router.beforeEach(async(to, from) => {
     // 不在白名单中并且已经登录的时候
     if (token) {
       // 添加flag防止多次获取动态路由和栈溢出
-      if (!routerStore.asyncRouterFlag && whiteList.indexOf(from.name) < 0) {
+      if (!asyncRouterFlag && whiteList.indexOf(from.name) < 0) {
+        asyncRouterFlag++
         await getRouter(userStore)
         if (userStore.token) {
           return { ...to, replace: true }
@@ -101,7 +104,6 @@ router.beforeEach(async(to, from) => {
 
 router.afterEach(() => {
   // 路由加载完成后关闭进度条
-  document.getElementsByClassName('main-cont main-right')[0]?.scrollTo(0, 0)
   Nprogress.done()
 })
 

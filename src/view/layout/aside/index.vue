@@ -58,7 +58,7 @@ const getTheme = () => {
     case '#fff':
       theme.value = {
         background: '#fff',
-        activeBackground: 'var(--el-color-primary)',
+        activeBackground: '#4D70FF',
         activeText: '#fff',
         normalText: '#333',
         hoverBackground: 'rgba(64, 158, 255, 0.08)',
@@ -68,7 +68,7 @@ const getTheme = () => {
     case '#191a23':
       theme.value = {
         background: '#191a23',
-        activeBackground: 'var(--el-color-primary)',
+        activeBackground: '#4D70FF',
         activeText: '#fff',
         normalText: '#fff',
         hoverBackground: 'rgba(64, 158, 255, 0.08)',

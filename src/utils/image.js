@@ -90,6 +90,3 @@ export default class ImageCompress {
     return new Blob([ab], { type: mimeString, lastModifiedDate: new Date() })
   }
 }
-
-const path = import.meta.env.VITE_BASE_API + '/'
-export const getUrl = (url) => url && url.slice(0, 4) !== 'http' ? path + url : url

@@ -2,7 +2,7 @@
   <div>
     <div class="gva-table-box">
       <div class="gva-btn-list">
-        <el-button type="primary" icon="plus" @click="addMenu('0')">新增根菜单</el-button>
+        <el-button size="small" type="primary" icon="plus" @click="addMenu('0')">新增根菜单</el-button>
       </div>
 
       <!-- 由于此处菜单跟左侧列表一一对应所以不需要分页 pageSize默认999 -->
@@ -36,19 +36,21 @@
         <el-table-column align="left" fixed="right" label="操作" width="300">
           <template #default="scope">
             <el-button
+              size="small"
               type="primary"
               link
               icon="plus"
               @click="addMenu(scope.row.ID)"
             >添加子菜单</el-button>
             <el-button
+              size="small"
               type="primary"
               link
               icon="edit"
               @click="editMenu(scope.row.ID)"
             >编辑</el-button>
             <el-button
-
+              size="small"
               type="primary"
               link
               icon="delete"
@@ -79,10 +81,10 @@
         </el-form-item>
         <el-form-item prop="path" style="width:30%">
           <template #label>
-            <span style="display: inline-flex;align-items: center;">
-              <span>路由Path</span>
-              <el-checkbox v-model="checkFlag" style="margin-left:12px;height: auto">添加参数</el-checkbox>
-            </span>
+            <div style="display:inline-flex">
+              路由Path
+              <el-checkbox v-model="checkFlag" style="float:right;margin-left:20px;">添加参数</el-checkbox>
+            </div>
           </template>
 
           <el-input
@@ -111,7 +113,7 @@
         </el-form-item>
         <el-form-item label="文件路径" prop="component" style="width:60%">
           <el-input v-model="form.component" autocomplete="off" placeholder="页面:view/xxx/xx.vue 插件:plugin/xx/xx.vue" @blur="fmtComponent" />
-          <span style="font-size:12px;margin-right:12px;">如果菜单包含子菜单，请创建router-view二级路由页面或者</span><el-button style="margin-top:4px" @click="form.component = 'view/routerHolder.vue'">点我设置</el-button>
+          <span style="font-size:12px;margin-right:12px;">如果菜单包含子菜单，请创建router-view二级路由页面或者</span><el-button style="margin-top:4px" size="small" @click="form.component = 'view/routerHolder.vue'">点我设置</el-button>
         </el-form-item>
         <el-form-item label="展示名称" prop="meta.title" style="width:30%">
           <el-input v-model="form.meta.title" autocomplete="off" />
@@ -163,11 +165,12 @@
       </el-form>
       <div>
         <el-button
+          size="small"
           type="primary"
           icon="edit"
           @click="addParameter(form)"
         >新增菜单参数</el-button>
-        <el-table :data="form.parameters" style="width: 100%;margin-top: 12px;">
+        <el-table :data="form.parameters" style="width: 100%">
           <el-table-column align="left" prop="type" label="参数类型" width="180">
             <template #default="scope">
               <el-select v-model="scope.row.type" placeholder="请选择">
@@ -195,7 +198,7 @@
               <div>
                 <el-button
                   type="danger"
-
+                  size="small"
                   icon="delete"
                   @click="deleteParameter(form.parameters,scope.$index)"
                 >删除</el-button>
@@ -206,11 +209,12 @@
 
         <el-button
           style="margin-top:12px"
+          size="small"
           type="primary"
           icon="edit"
           @click="addBtn(form)"
         >新增可控按钮</el-button>
-        <el-table :data="form.menuBtn" style="width: 100%;margin-top: 12px;">
+        <el-table :data="form.menuBtn" style="width: 100%">
           <el-table-column align="left" prop="name" label="按钮名称" width="180">
             <template #default="scope">
               <div>
@@ -230,7 +234,7 @@
               <div>
                 <el-button
                   type="danger"
-
+                  size="small"
                   icon="delete"
                   @click="deleteBtn(form.menuBtn,scope.$index)"
                 >删除</el-button>
@@ -241,8 +245,8 @@
       </div>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="closeDialog">取 消</el-button>
-          <el-button type="primary" @click="enterDialog">确 定</el-button>
+          <el-button size="small" @click="closeDialog">取 消</el-button>
+          <el-button size="small" type="primary" @click="enterDialog">确 定</el-button>
         </div>
       </template>
     </el-dialog>
@@ -332,6 +336,7 @@ const deleteBtn = async(btns, index) => {
   const res = await canRemoveAuthorityBtnApi({ id: btn.ID })
   if (res.code === 0) {
     btns.splice(index, 1)
+    return
   }
 }
 
